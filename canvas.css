@@ -1,0 +1,15 @@
+/*
+    Document   : canvas.css
+    Created on : 2015-04-27 09:42 PM
+    Author     : Novark3
+    Description:
+    Purpose of the stylesheet follows.
+    To change this template use Tools | Templates.
+*/
+
+root {
+    display: block;
+}
+img{
+    visibility: hidden;
+}
