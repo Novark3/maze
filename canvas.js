@@ -121,6 +121,7 @@ function Block(x, y, width, height) {
         ctx.strokeRect(this.x, this.y, this.width, this.height);
     };
 }
+
 function endTile(x, y, width, height) {
     this.x = x;
     this.y = y;
@@ -178,7 +179,7 @@ maps.push(
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -190,25 +191,31 @@ maps.push(
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ]);
-for(i = 0; i < maps[mapNum].length; i++) {
-    for(j = 0; j < maps[mapNum][i].length; j++) {
-        if(maps[mapNum][i][j] === 1) {
-            blocks.push(new Block(j * 20 + 1, i * 20 + 1, 20, 20));
-        }
-        if(maps[mapNum][i][j] === 2) {
-            movingBlocks.push(new movingBlock(j * 20 + 1, i * 20 + 1, 20, 20));
-        }
-        if(maps[mapNum][i][j] === 3) {
-            endTiles.push(new endTile(j * 20 + 1, i * 20 + 1, 20, 20));
+
+function newMap() {
+    blocks.length = 0;
+    for(i = 0; i < maps[mapNum].length; i++) {
+        for(j = 0; j < maps[mapNum][i].length; j++) {
+            if(maps[mapNum][i][j] === 1) {
+                blocks.push(new Block(j * 20 + 1, i * 20 + 1, 20, 20));
+            }
+            if(maps[mapNum][i][j] === 2) {
+                movingBlocks.push(new movingBlock(j * 20 + 1, i * 20 + 1, 20, 20));
+            }
+            if(maps[mapNum][i][j] === 3) {
+                endTiles.push(new endTile(j * 20 + 1, i * 20 + 1, 20, 20));
+            }
         }
     }
 }
+newMap();
 var player = {
     x: 7,
     y: 7,
     height: 25,
     width: 25,
     draw: function() {
+        ctx.beginPath();
         ctx.rect(this.x, this.y, this.height, this.width);
         ctx.fillStyle = "red";
         ctx.fill();
@@ -228,47 +235,54 @@ function playerIsCollidingWithBlocks() {
             player.y = 7;
         }
     }
+    for(i = 0; i < endTiles.length; i++) {
+        if(isColliding(player, endTiles[i]) === true) {
+            mapNum++;
+            player.x = 7;
+            player.y = 7;
+            newMap();
+        }
+    }
 }
+
 function movingBlock(x, y, width, height) {
     this.x = x;
-    this.y = y; 
+    this.y = y;
     this.width = width;
     this.height = height;
     this.movingLeft = true;
-    this.draw = function(){
+    this.draw = function() {
         ctx.strokeRect(this.x, this.y, this.height, this.width);
     };
-    this.move = function(){
+    this.move = function() {
         if(this.movingLeft) {
-            this.x -=5;
+            this.x -= 5;
         } else {
             this.x += 5;
         }
-//         for(i = 0; i < blocks.length; i++) {
-//             var tempObject = {
-//                 x: this.x,
-//                 y: this.y,
-//                 height: this.height,
-//                 width: this.width
-//             }
-//             if(isColliding(tempObject, blocks[i])) {
-//                 this.movingLeft = !this.movingLeft
-//             }
-//         }
+        //         for(i = 0; i < blocks.length; i++) {
+        //             var tempObject = {
+        //                 x: this.x,
+        //                 y: this.y,
+        //                 height: this.height,
+        //                 width: this.width
+        //             }
+        //             if(isColliding(tempObject, blocks[i])) {
+        //                 this.movingLeft = !this.movingLeft
+        //             }
+        //         }
     };
 }
-
 
 function gameLoop() {
     ctx.clearRect(0, 0, 1300, 620);
     ctx.beginPath();
     for(i = 0; i < blocks.length; i++) blocks[i].draw();
-//     for(i = 0; i < movingBlocks.length; i++) {
-//         movingBlocks[i].move();
-//         movingBlocks[i].draw();
-//     }
+    //     for(i = 0; i < movingBlocks.length; i++) {
+    //         movingBlocks[i].move();
+    //         movingBlocks[i].draw();
+    //     }
     for(i = 0; i < endTiles.length; i++) endTiles[i].draw();
-    
     moveBall();
     playerIsCollidingWithBlocks();
     player.draw();
