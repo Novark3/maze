@@ -13,3 +13,7 @@ root {
 img{
     visibility: hidden;
 }
+body, html { 
+    overflow-x: hidden; 
+    overflow-y: hidden;
+}
