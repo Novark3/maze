@@ -67,16 +67,16 @@ window.addEventListener("keyup", setFalse, true);
 
 function moveBall() {
     if(keyLeft === true && player.x > 0) {
-        player.x -= 4;
+        player.x -= 5;
     }
     if(keyUp === true && player.y > 0) {
-        player.y -= 4;
+        player.y -= 5;
     }
     if(keyRight === true && player.x < canvas.width - 25) {
-        player.x += 4;
+        player.x += 5;
     }
     if(keyDown === true && player.y < canvas.height - 25) {
-        player.y += 4;
+        player.y += 5;
     }
 }
 // if(vertical > getElementById.mycanvas.height || vertical <= 0) {
