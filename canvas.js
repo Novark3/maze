@@ -33,32 +33,32 @@ function isColliding(thing1, thing2) {
 
 function setFalse(event) {
     var key = event.which;
-    if(key == 37) {
+    if(key == 37 || key == 65) {
         keyLeft = false;
     }
-    if(key == 38) {
+    if(key == 38 || key == 87) {
         keyUp = false;
     }
-    if(key == 39) {
+    if(key == 39 || key == 68) {
         keyRight = false;
     }
-    if(key == 40) {
+    if(key == 40 || key == 83) {
         keyDown = false;
     }
 }
 
 function keyDownHandler(event) {
     var key = event.which;
-    if(key == 37) {
+    if(key == 37 || key == 65) {
         keyLeft = true;
     }
-    if(key == 38) {
+    if(key == 38 || key == 87) {
         keyUp = true;
     }
-    if(key == 39) {
+    if(key == 39 || key == 68) {
         keyRight = true;
     }
-    if(key == 40) {
+    if(key == 40 || key == 83) {
         keyDown = true;
     }
 }
