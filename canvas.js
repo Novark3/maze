@@ -9,7 +9,7 @@ var keyUp = false;
 var keyLeft = false;
 var keyRight = false;
 var keyDown = false;
-
+var diagonalBlocks = [];
 //var gotKey = 0;
 var fakeBlocks = []; 
 var movingBlocks = [];
@@ -148,6 +148,25 @@ function endTile(x, y, width, height) {
         ctx.rect(this.x, this.y, this.width, this.height);
         ctx.fillStyle = "blue";
         ctx.fill();
+    };
+}
+function diagonalBlock(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.movingDiagonal = true;
+    this.draw = function() {
+        ctx.strokeRect(this.x, this.y, this.height, this.width);
+    };
+    this.move = function() {
+        if(this.movingDiagonal) {
+            this.x -= 3;
+            this.y -= 3;
+        } else {
+            this.x += 3;
+            this.y += 3;
+        }
     };
 }
 function fakeBlock(x, y, width, height) {
@@ -693,6 +712,7 @@ function newMap() {
     invisBlocks = [];
     sandBlocks = [];
     vertMovingBlocks = [];
+    diagonalBlocks = [];
     fakeBlocks = [];
     for(i = 0; i < maps[mapNum].length; i++) {
         for(j = 0; j < maps[mapNum][i].length; j++) {
@@ -716,6 +736,9 @@ function newMap() {
             }
             if(maps[mapNum][i][j] == 7) {
                 fakeBlocks.push(new fakeBlock(j * 20 + 1, i * 20 + 1, 20, 20));
+            }
+            if(maps[mapNum][i][j] == 8) {
+                diagonalBlocks.push(new diagonalBlock(j * 20 + 1, i * 20 + 1, 20, 20));
             }
         }
     }
@@ -813,6 +836,16 @@ function vertMovingBlock(x, y, width, height) {
         }
 };
 }
+
+function changeDiagBlockDirection(){
+    for(i = 0; i < diagonalBlocks.length; i++){
+        for(j = 0; j < blocks.length; j++){
+            if(isColliding(diagonalBlocks[i], blocks[j])) {
+                diagonalBlocks[i].movingDiagonal = !diagonalBlocks[i].movingDiagonal;
+            }
+        }
+    }
+}
 function changeMovingBlockDirection(){
     for(i = 0; i < movingBlocks.length; i++){
         for(j = 0; j < blocks.length; j++){
@@ -821,6 +854,8 @@ function changeMovingBlockDirection(){
             }
         }      
     }
+
+    
 //     for(i = 0; i < movingBlocks.length; i++){
 //         for(j = 0; j < invisBlocks.length; j++){
 //             if(isColliding(movingBlock[i], invisBlocks[j])) {
@@ -844,6 +879,7 @@ function gameLoop() {
     ctx.beginPath();
     changeMovingBlockDirection();
     changeVertBlockDirection();
+    changeDiagBlockDirection();
     for(i = 0; i < blocks.length; i++) blocks[i].draw();
         for(i = 0; i < movingBlocks.length; i++) {
             movingBlocks[i].move();
@@ -857,6 +893,10 @@ function gameLoop() {
     for(i = 0; i < invisBlocks.length; i++) invisBlocks[i].draw();
     for(i = 0; i < sandBlocks.length; i++) sandBlocks[i].draw();
     for(i = 0; i < fakeBlocks.length; i++) fakeBlocks[i].draw();
+    for(i = 0; i < diagonalBlocks.length; i++){ 
+        diagonalBlocks[i].move();
+        diagonalBlocks[i].draw();
+    }
     moveBall();
     playerIsCollidingWithBlocks();
     player.draw();
