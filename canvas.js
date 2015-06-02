@@ -938,7 +938,7 @@ function gameLoop() {
     changeVertBlockDirection();
     changeDiagBlockDirection();
     //     changeDeathNum();
-    document.title = deathCount;
+    document.getElementById("deathList").innerHTML = deathCount;
     for(i = 0; i < blocks.length; i++) blocks[i].draw();
     for(i = 0; i < movingBlocks.length; i++) {
         movingBlocks[i].move();
